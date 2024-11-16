@@ -72,10 +72,10 @@ jobs:
       - name: use gemini
         if: env.BBM_GOOGLE_GEMINI_KEY != null
         run: |
-          python3 make_book.py --book_name "test_books/animal_farm.epub" --test --model gemini
+          python3 make_book.py --book_name "test_books/Pour_Your_Misery_Down.txt" --test --model gemini
       - name: Rename and Upload ePub
         if: env.BBM_GOOGLE_GEMINI_KEY != null
         uses: actions/upload-artifact@v3
         with:
           name: epub_output
-          path: "test_books/animal_farm_bilingual.epub"
+          path: "test_books/Pour_Your_Misery_Down_bi.txt"

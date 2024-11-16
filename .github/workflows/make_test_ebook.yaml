@@ -50,7 +50,7 @@ jobs:
 #
       - name: make txt book test using google translate
         run: |
-          python3 make_book.py --book_name "test_books/the_little_prince.txt" --test --test_num 20 --model google
+          python3 make_book.py --book_name "test_books/the_little_prince.txt" --model google
 #
 #      - name: make txt book test with batch_size
 #        run: |

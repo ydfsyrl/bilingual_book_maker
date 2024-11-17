@@ -73,15 +73,18 @@ class TXTBookLoader(BaseBookLoader):
                     continue
                 if not self.resume or index >= p_to_save_len:
                     try:
-                        temp = self.translate_model.translate(batch_text)
+                        translated_text = self.translate_model.translate(batch_text)
                     except Exception as e:
                         print(e)
                         raise Exception("Something is wrong when translate") from e
-                    self.p_to_save.append(temp)
-                    if not self.single_translate:
-                        self.bilingual_result.append(batch_text)
-                    self.bilingual_result.append(temp)
+                    self.p_to_save.append(translated_text)
+                    if self.single_translate:
+                        self.bilingual_result.append(translated_text)
+                    else:  # 中英双语对照
+                        bi_text_list = self.alternate_print(batch_text, translated_text)
+                        self.bilingual_result.append("\n".join(bi_text_list))
                 index += self.batch_size
+                print("index is ", index , " , test_num is ", self.test_num)
                 if self.is_test and index > self.test_num:
                     break
 
@@ -138,3 +141,21 @@ class TXTBookLoader(BaseBookLoader):
                 f.write("\n".join(content))
         except:
             raise Exception("can not save file")
+
+    # 制作双语文本
+    def alternate_print(self, raw_text, trans_text):
+        english_lines = [line for line in raw_text.splitlines() if line.strip()]
+        chinese_lines = [line for line in trans_text.splitlines() if line.strip()]
+        eng_len = len(english_lines)
+        ch_len = len(chinese_lines)
+        if (eng_len != ch_len):
+            print(f"文件行数不一致：raw_text 有{eng_len}行，trans_text 有{ch_len}行。")
+
+        max_length = max(eng_len, ch_len)
+        bi_lines = []
+        for i in range(max_length):
+            if i < eng_len:
+                bi_lines.append(english_lines[i])
+            if i < ch_len:
+                bi_lines.append(chinese_lines[i])
+        return bi_lines

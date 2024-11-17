@@ -8,19 +8,19 @@ from .base_loader import BaseBookLoader
 
 class TXTBookLoader(BaseBookLoader):
     def __init__(
-        self,
-        txt_name,
-        model,
-        key,
-        resume,
-        language,
-        model_api_base=None,
-        is_test=False,
-        test_num=5,
-        prompt_config=None,
-        single_translate=False,
-        context_flag=False,
-        temperature=1.0,
+            self,
+            txt_name,
+            model,
+            key,
+            resume,
+            language,
+            model_api_base=None,
+            is_test=False,
+            test_num=5,
+            prompt_config=None,
+            single_translate=False,
+            context_flag=False,
+            temperature=1.0,
     ) -> None:
         self.txt_name = txt_name
         self.translate_model = model(
@@ -63,7 +63,7 @@ class TXTBookLoader(BaseBookLoader):
 
         try:
             sliced_list = [
-                self.origin_book[i : i + self.batch_size]
+                self.origin_book[i: i + self.batch_size]
                 for i in range(0, len(self.origin_book), self.batch_size)
             ]
             for i in sliced_list:
@@ -84,7 +84,7 @@ class TXTBookLoader(BaseBookLoader):
                         bi_text_list = self.alternate_print(batch_text, translated_text)
                         self.bilingual_result.append("\n".join(bi_text_list))
                 index += self.batch_size
-                print("index is ", index , " , test_num is ", self.test_num)
+                print("index is ", index, " , test_num is ", self.test_num)
                 if self.is_test and index > self.test_num:
                     break
 
@@ -103,7 +103,7 @@ class TXTBookLoader(BaseBookLoader):
     def _save_temp_book(self):
         index = 0
         sliced_list = [
-            self.origin_book[i : i + self.batch_size]
+            self.origin_book[i: i + self.batch_size]
             for i in range(0, len(self.origin_book), self.batch_size)
         ]
 
@@ -148,7 +148,7 @@ class TXTBookLoader(BaseBookLoader):
         chinese_lines = [line for line in trans_text.splitlines() if line.strip()]
         eng_len = len(english_lines)
         ch_len = len(chinese_lines)
-        if (eng_len != ch_len):
+        if eng_len != ch_len:
             print(f"文件行数不一致：raw_text 有{eng_len}行，trans_text 有{ch_len}行。")
 
         max_length = max(eng_len, ch_len)

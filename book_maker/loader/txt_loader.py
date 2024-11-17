@@ -84,7 +84,6 @@ class TXTBookLoader(BaseBookLoader):
                         bi_text_list = self.alternate_print(batch_text, translated_text)
                         self.bilingual_result.append("\n".join(bi_text_list))
                 index += self.batch_size
-                print("index is ", index, " , test_num is ", self.test_num)
                 if self.is_test and index > self.test_num:
                     break
 

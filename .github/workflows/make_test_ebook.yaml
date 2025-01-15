@@ -72,7 +72,7 @@ jobs:
       - name: use gemini
         if: env.BBM_GOOGLE_GEMINI_KEY != null
         run: |
-          python3 make_book.py --book_name "test_books/Drunk_on_Something.txt" --model gemini --batch_size 30
+          python3 make_book.py --book_name "test_books/Drunk_on_Something.txt" --model gemini --batch_size 5
       - name: Rename and Upload ePub
         if: env.BBM_GOOGLE_GEMINI_KEY != null
         uses: actions/upload-artifact@v3

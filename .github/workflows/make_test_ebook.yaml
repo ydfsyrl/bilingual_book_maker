@@ -75,7 +75,7 @@ jobs:
           python3 make_book.py --book_name "test_books/River.epub" --model gemini --batch_size 5
       - name: Rename and Upload ePub
         if: env.BBM_GOOGLE_GEMINI_KEY != null
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: epub_output
           path: "test_books/River_bilingual.epub"

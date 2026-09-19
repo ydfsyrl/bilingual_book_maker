@@ -4,7 +4,7 @@ description = "The bilingual_book_maker is an AI translation tool that uses Chat
 readme = "README.md"
 license = {text = "MIT"}
 dynamic = ["version"]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 authors = [
     { name = "yihong0618", email = "zouzou0208@gmail.com" },
 ]
@@ -15,19 +15,20 @@ classifiers = [
 ]
 dependencies = [
     "anthropic",
-    "backoff",
     "bs4",
     "ebooklib",
-    "google-generativeai",
-    "langdetect",
-    "litellm",
-    "openai>=1.1.1",
-    "PyDeepLX",
+    # the gemini route's SDK; the groq, xai and litellm routes need none of
+    # their own, being the OpenAI shape at another address.
+    "google-genai",
+    # chat.completions.parse (Structured Outputs) is unavailable before 1.92.
+    "openai>=1.92.0",
+    "pydantic>=2.0",
     "requests",
     "rich",
+    "tenacity",
     "tiktoken",
     "tqdm",
-    "groq>=0.5.0",
+    "PyMuPDF",
 ]
 
 [project.scripts]
@@ -46,3 +47,20 @@ requires = ["pdm-backend>=2.0.0"]
 build-backend = "pdm.backend"
 [tool.pdm.version]
 source = "scm"
+
+[tool.pytest.ini_options]
+markers = [
+    "corpus: the 45-book ./epub-sample acceptance gate (slow, offline; run with -m corpus)",
+    "live_provider: calls a real translation provider (needs keys and network; run with -m live_provider)",
+]
+# Two different reasons to stay out of a bare `pytest`, both deselected here:
+# the corpus gate is an acceptance run, not a unit-test run — it partitions
+# every sample book and writes real EPUBs — and live_provider spends real
+# quota, which a fork's CI run has neither key nor secret for. The CLI
+# contract tests are integration tests too and do stay in the default run,
+# because they go through an offline stand-in. Both markers are asked for by
+# name; the default selection is hermetic.
+addopts = "-m 'not corpus and not live_provider'"
+
+[tool.black]
+target-version = ["py312"]

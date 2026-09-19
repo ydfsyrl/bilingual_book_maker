@@ -6,6 +6,13 @@ from pathlib import Path
 
 import pytest
 
+# every test here shells out to a real provider: live network, real keys,
+# real quota. Deselected from the default run and asked for by name. The
+# marker names the network dependency, not the test's scope — the CLI
+# contract tests are integration tests too and stay in the default run,
+# because they translate through an offline stand-in.
+pytestmark = pytest.mark.live_provider
+
 
 @pytest.fixture()
 def test_book_dir() -> str:
@@ -30,7 +37,7 @@ def test_google_translate_epub(test_book_dir, tmpdir):
             "--test",
             "--test_num",
             "20",
-            "--model",
+            "--api_format",
             "google",
         ],
         env=os.environ.copy(),
@@ -56,7 +63,7 @@ def test_deepl_free_translate_epub(test_book_dir, tmpdir):
             "--test",
             "--test_num",
             "20",
-            "--model",
+            "--api_format",
             "deeplfree",
         ],
         env=os.environ.copy(),
@@ -86,7 +93,7 @@ def test_google_translate_txt(test_book_dir, tmpdir):
             "--test",
             "--test_num",
             "20",
-            "--model",
+            "--api_format",
             "google",
         ],
         env=os.environ.copy(),
@@ -113,7 +120,7 @@ def test_google_translate_txt_batch_size(test_book_dir, tmpdir):
             "30",
             "--test_num",
             "20",
-            "--model",
+            "--api_format",
             "google",
         ],
         env=os.environ.copy(),
@@ -144,7 +151,7 @@ def test_caiyun_translate_txt(test_book_dir, tmpdir):
             "10",
             "--test_num",
             "100",
-            "--model",
+            "--api_format",
             "caiyun",
         ],
         env=os.environ.copy(),
@@ -175,7 +182,7 @@ def test_deepl_translate_txt(test_book_dir, tmpdir):
             "30",
             "--test_num",
             "20",
-            "--model",
+            "--api_format",
             "deepl",
         ],
         env=os.environ.copy(),
@@ -206,7 +213,7 @@ def test_deepl_translate_srt(test_book_dir, tmpdir):
             "30",
             "--test_num",
             "2",
-            "--model",
+            "--api_format",
             "deepl",
         ],
         env=os.environ.copy(),
@@ -240,6 +247,8 @@ def test_openai_translate_epub_zh_hans(test_book_dir, tmpdir):
             "5",
             "--language",
             "zh-hans",
+            "--model_list",
+            "gpt-4o-mini",
         ],
         env=os.environ.copy(),
     )
@@ -268,8 +277,8 @@ def test_openai_translate_epub_ja_prompt_txt(test_book_dir, tmpdir):
             "5",
             "--language",
             "ja",
-            "--model",
-            "gpt3",
+            "--model_list",
+            "gpt-4o-mini",
             "--prompt",
             "prompt_template_sample.txt",
         ],
@@ -301,7 +310,9 @@ def test_openai_translate_epub_ja_prompt_json(test_book_dir, tmpdir):
             "--language",
             "ja",
             "--prompt",
-            "prompt_template_sample.json",
+            "prompt_template.json",
+            "--model_list",
+            "gpt-4o-mini",
         ],
         env=os.environ.copy(),
     )
@@ -328,6 +339,8 @@ def test_openai_translate_srt(test_book_dir, tmpdir):
             "--test",
             "--test_num",
             "20",
+            "--model_list",
+            "gpt-4o-mini",
         ],
         env=os.environ.copy(),
     )

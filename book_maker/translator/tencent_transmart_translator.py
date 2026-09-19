@@ -1,16 +1,17 @@
-import re
 import time
 import uuid
 import requests
 
-from rich import print
-from .base_translator import Base
+from .base_translator import Base, NO_PROMPT_SECTIONS
 
 
 class TencentTranSmart(Base):
     """
     Tencent TranSmart translator
     """
+
+    # Handed text and nothing else: --prompt has no slot here.
+    PROMPT_SECTION_SLOTS = NO_PROMPT_SECTIONS
 
     def __init__(self, key, language, **kwargs) -> None:
         super().__init__(key, language)
@@ -32,7 +33,6 @@ class TencentTranSmart(Base):
         pass
 
     def translate(self, text):
-        print(text)
         source_language, text_list = self.text_analysis(text)
         client_key = self.get_client_key()
         api_form_data = {
@@ -53,12 +53,11 @@ class TencentTranSmart(Base):
             self.api_url, json=api_form_data, headers=self.header, timeout=3
         )
         t_text = "".join(response.json()["auto_translation"])
-        print("[bold green]" + re.sub("\n{3,}", "\n\n", t_text) + "[/bold green]")
         return t_text
 
     def text_analysis(self, text):
         client_key = self.get_client_key()
-        self.header.update({"Cookie": "TSMT_CLIENT_KEY={}".format(client_key)})
+        self.header.update({"Cookie": f"TSMT_CLIENT_KEY={client_key}"})
         analysis_request_data = {
             "header": {
                 "fn": "text_analysis",
@@ -81,6 +80,4 @@ class TencentTranSmart(Base):
         return language, text_list
 
     def get_client_key(self):
-        return "browser-chrome-121.0.0-Windows_10-{}-{}".format(
-            self.uuid, int(time.time() * 1e3)
-        )
+        return f"browser-chrome-121.0.0-Windows_10-{self.uuid}-{int(time.time() * 1e3)}"

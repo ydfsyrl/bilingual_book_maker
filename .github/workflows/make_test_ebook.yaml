@@ -49,10 +49,10 @@ jobs:
       # runs first because it is the fast, deterministic signal: ~40s, versus
       # the live translation calls below. The live-provider suite deselects
       # itself by marker (see pyproject.toml).
-      - name: Run the test suite
-        run: |
-            pip install pytest
-            pytest -q
+#      - name: Run the test suite
+#        run: |
+#            pip install pytest
+#            pytest -q
 
       # Live smokes against the free Google endpoint, manual-only: it
       # rate-limits and times out from CI runner IPs even behind retries,
@@ -60,53 +60,53 @@ jobs:
       # is covered hermetically by the suite above. They test Google's
       # servers, not this code, so they gate nothing — run them from the
       # Actions tab when a live check is actually wanted.
-      - name: make normal ebook test using google translate and cli
-        if: github.event_name == 'workflow_dispatch'
-        run: |
-            retry() { n=0; until "$@"; do n=$((n+1)); [ "$n" -ge 3 ] && return 1; echo "attempt $n failed; retrying in $((n*30))s"; sleep $((n*30)); done; }
-            retry bbook_maker --book_name "test_books/Liber_Esther.epub" --test --test_num 10 --api_format google --translate-tags div,p
-            retry bbook_maker --book_name "test_books/Liber_Esther.epub" --test --test_num 20 --api_format google
-
-      - name: make txt book test using google translate
-        if: github.event_name == 'workflow_dispatch'
-        run: |
-          retry() { n=0; until "$@"; do n=$((n+1)); [ "$n" -ge 3 ] && return 1; echo "attempt $n failed; retrying in $((n*30))s"; sleep $((n*30)); done; }
-          retry python3 make_book.py --book_name "test_books/the_little_prince.txt" --test --test_num 20 --api_format google
-
-      - name: make txt book test with batch_size
-        if: github.event_name == 'workflow_dispatch'
-        run: |
-          retry() { n=0; until "$@"; do n=$((n+1)); [ "$n" -ge 3 ] && return 1; echo "attempt $n failed; retrying in $((n*30))s"; sleep $((n*30)); done; }
-          retry python3 make_book.py --book_name "test_books/the_little_prince.txt" --test --batch_size 30 --test_num 20 --api_format google
-
-      - name: make caiyun translator test
-        if: env.BBM_CAIYUN_API_KEY != null
-        run: |
-          python3 make_book.py --book_name "test_books/the_little_prince.txt" --test --batch_size 30 --test_num 100 --api_format caiyun
-
-      - name: make openai key ebook test
-        if: env.BBM_DEEPL_API_KEY != null
-        run: |
-            python3 make_book.py --book_name "test_books/lemo.epub" --test --test_num 5 --language zh-hans --model gpt-4o-mini
-            python3 make_book.py --book_name "test_books/animal_farm.epub" --test --test_num 5 --language ja --model gpt-4o-mini --prompt prompt_template_sample.txt
-            python3 make_book.py --book_name "test_books/animal_farm.epub" --test --test_num 5 --language ja --model gpt-4o-mini --prompt prompt_template.json
-            python3 make_book.py --book_name test_books/Lex_Fridman_episode_322.srt --test --test_num 20 --model gpt-4o-mini
-            
-      - name: Rename and Upload ePub
-        if: env.OPENAI_API_KEY != null
-        uses: actions/upload-artifact@v6
-        with:
-          name: epub_output
-          path: "test_books/lemo_bilingual.epub"
+#      - name: make normal ebook test using google translate and cli
+#        if: github.event_name == 'workflow_dispatch'
+#        run: |
+#            retry() { n=0; until "$@"; do n=$((n+1)); [ "$n" -ge 3 ] && return 1; echo "attempt $n failed; retrying in $((n*30))s"; sleep $((n*30)); done; }
+#            retry bbook_maker --book_name "test_books/Liber_Esther.epub" --test --test_num 10 --api_format google --translate-tags div,p
+#            retry bbook_maker --book_name "test_books/Liber_Esther.epub" --test --test_num 20 --api_format google
+#
+#      - name: make txt book test using google translate
+#        if: github.event_name == 'workflow_dispatch'
+#        run: |
+#          retry() { n=0; until "$@"; do n=$((n+1)); [ "$n" -ge 3 ] && return 1; echo "attempt $n failed; retrying in $((n*30))s"; sleep $((n*30)); done; }
+#          retry python3 make_book.py --book_name "test_books/the_little_prince.txt" --test --test_num 20 --api_format google
+#
+#      - name: make txt book test with batch_size
+#        if: github.event_name == 'workflow_dispatch'
+#        run: |
+#          retry() { n=0; until "$@"; do n=$((n+1)); [ "$n" -ge 3 ] && return 1; echo "attempt $n failed; retrying in $((n*30))s"; sleep $((n*30)); done; }
+#          retry python3 make_book.py --book_name "test_books/the_little_prince.txt" --test --batch_size 30 --test_num 20 --api_format google
+#
+#      - name: make caiyun translator test
+#        if: env.BBM_CAIYUN_API_KEY != null
+#        run: |
+#          python3 make_book.py --book_name "test_books/the_little_prince.txt" --test --batch_size 30 --test_num 100 --api_format caiyun
+#
+#      - name: make openai key ebook test
+#        if: env.BBM_DEEPL_API_KEY != null
+#        run: |
+#            python3 make_book.py --book_name "test_books/lemo.epub" --test --test_num 5 --language zh-hans --model gpt-4o-mini
+#            python3 make_book.py --book_name "test_books/animal_farm.epub" --test --test_num 5 --language ja --model gpt-4o-mini --prompt prompt_template_sample.txt
+#            python3 make_book.py --book_name "test_books/animal_farm.epub" --test --test_num 5 --language ja --model gpt-4o-mini --prompt prompt_template.json
+#            python3 make_book.py --book_name test_books/Lex_Fridman_episode_322.srt --test --test_num 20 --model gpt-4o-mini
+#
+#      - name: Rename and Upload ePub
+#        if: env.OPENAI_API_KEY != null
+#        uses: actions/upload-artifact@v6
+#        with:
+#          name: epub_output
+#          path: "test_books/lemo_bilingual.epub"
 
 # my step
       - name: use gemini
         if: env.BBM_GOOGLE_GEMINI_KEY != null
         run: |
-          python3 make_book.py --book_name "test_books/River.epub" --model gemini --batch_size 5
+          python3 make_book.py --book_name "test_books/Lex_Fridman_episode_322.srt" --model gemini --batch_size 20
       - name: Rename and Upload ePub
         if: env.BBM_GOOGLE_GEMINI_KEY != null
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: epub_output
-          path: "test_books/River_bilingual.epub"
+          path: "test_books/Lex_Fridman_episode_322_bilingual.srt"

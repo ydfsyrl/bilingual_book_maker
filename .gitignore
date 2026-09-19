@@ -29,6 +29,7 @@ MANIFEST
 .idea/
 .DS_Store
 test_books/
+my_books/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

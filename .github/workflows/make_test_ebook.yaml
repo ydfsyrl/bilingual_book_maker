@@ -103,7 +103,7 @@ jobs:
       - name: use gemini
         if: env.BBM_GOOGLE_GEMINI_KEY != null
         run: |
-          python3 make_book.py --book_name "test_books/Nikudan.srt" --api_format gemini --model gemini-3.6-flash --interval 60
+          python3 make_book.py --book_name "test_books/Nikudan.srt" --api_format gemini --model gemini-3.8-flash --interval 60
       - name: Rename and Upload ePub
         if: env.BBM_GOOGLE_GEMINI_KEY != null
         uses: actions/upload-artifact@v6
